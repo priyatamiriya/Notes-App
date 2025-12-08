@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes App</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial;
+      background: linear-gradient(to bottom right, #7ed6df, #22a6b3);
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      padding: 40px;
+      gap: 30px;
+    }
+
+    .add-box, .note-card {
+      background:white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+    }
+
+    .add-box{
+        flex-shrink: 0;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .add-box h2, .records-box h2 {
+      color: #0c6ee8;
+    }
+
+    .add-box input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .add-box button {
+      width: 100%;
+      padding: 10px;
+      background: #0c6ee8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .records-box {
+      width: 55%;
+    }
+
+    .notes-list {
+      margin-top: 20px;
+    }
+
+    .note-card {
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #ffffff;
+      border-left: 5px solid #0c6ee8;
+      position: relative;
+    }
+
+    .delete-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: red;
+    }
+
+    /* ===============================
+       RESPONSIVE (TABLET + MOBILE)
+       =============================== */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .add-box {
+        width: 90%;
+        height: auto;
+      }
+
+      .records-box {
+        width: 90%;
+      }
+
+      .note-card {
+        width: 100%;
+      }
+    }
+
+    /* ===============================
+       SMALL MOBILE VIEW
+       =============================== */
+    @media (max-width: 500px) {
+      .add-box h2, .records-box h2 {
+        font-size: 20px;
+      }
+
+      .add-box button {
+        font-size: 16px;
+        padding: 8px;
+      }
+
+      .note-card {
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+<h1>Notes App :</h1>
+  <div class="container">
+
+    <div class="add-box">
+      <h2>Add a Note</h2>
+      <input id="noteInput" type="text" placeholder="Write a note..." />
+      <button onclick="addNote()">Add Note</button>
+    </div>
+
+    <div class="records-box">
+      <h2>Notes</h2>
+      <div id="notesList" class="notes-list">No notes available</div>
+    </div>
+
+  </div>
+
+  <script>
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+    function displayNotes() {
+      const list = document.getElementById("notesList");
+
+      if (notes.length === 0) {
+        list.innerHTML = "No notes available";
+        return;
+      }
+
+      list.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        list.innerHTML += `
+          <div class="note-card">
+            <span class="delete-btn" onclick="deleteNote(${index})">×</span>
+            <p>${note}</p>
+          </div>
+        `;
+      });
+    }
+
+    function addNote() {
+      const input = document.getElementById("noteInput");
+
+      if (input.value.trim() === "") {
+        alert("Please enter a note");
+        return;
+      }
+
+      notes.push(input.value);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      input.value = "";
+      displayNotes();
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      displayNotes();
+    }
+
+    displayNotes();
+  </script>
+
+</body>
+</html>
+
